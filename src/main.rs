@@ -20,6 +20,13 @@ struct Location {
     entities: Vec<usize>,
 }
 
+struct State {
+    locations: Vec<Location>,
+    links: Vec<String>,
+    entities: Vec<Entity>,
+    objects: Vec<Object>,
+}
+
 fn main() {
     let mut objects: Vec<Object> = vec![
         Object {
@@ -116,28 +123,28 @@ fn main() {
         ]
     };
 
-    print_location(&locations, &links, &entities, &objects, 1, 1);
+    let state = State {
+        locations,
+        links,
+        entities,
+        objects,
+    };
+
+    print_location(&state, 1, 1);
 }
 
-fn print_location(
-    locations: &Vec<Location>,
-    links: &Vec<String>,
-    entities: &Vec<Entity>,
-    objects: &Vec<Object>,
-    location_id: usize,
-    entity_id: usize,
-) {
-    print!("u r in {}\n", locations[location_id].name);
+fn print_location(state: &State, location_id: usize, entity_id: usize) {
+    print!("u r in {}\n", state.locations[location_id].name);
 
     // prit objects
     print!("u c: ");
     let mut counter = 0;
-    for &oid in &locations[location_id].objects {
+    for &oid in &state.locations[location_id].objects {
         if counter != 0 {
             print!(", ");
         }
         counter += 1;
-        print!("{}", objects[oid].name);
+        print!("{}", state.objects[oid].name);
     }
     if counter == 0 {
         print!("nothing");
@@ -146,7 +153,7 @@ fn print_location(
 
     // print entity excluding the current entity
     let mut counter = 0;
-    for &eid in locations[location_id].entities.iter() {
+    for &eid in state.locations[location_id].entities.iter() {
         if eid == entity_id {
             continue;
         }
@@ -154,7 +161,7 @@ fn print_location(
             print!(", ");
         }
         counter += 1;
-        print!("{}", entities[eid].name);
+        print!("{}", state.entities[eid].name);
     }
     if counter != 0 {
         print!(" is here\n");
@@ -163,12 +170,12 @@ fn print_location(
     // print exits
     print!("exits: ");
     let mut counter = 0;
-    for lid in locations[location_id].links.iter() {
+    for lid in state.locations[location_id].links.iter() {
         if counter != 0 {
             print!(", ");
         }
         counter += 1;
-        print!("{}", links[lid.link]);
+        print!("{}", state.links[lid.link]);
     }
     if counter == 0 {
         print!("none");
