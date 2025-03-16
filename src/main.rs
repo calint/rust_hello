@@ -135,6 +135,8 @@ fn main() {
     print_location(&state, eid, state.entities[eid].location);
     action_go(&mut state, eid, 1);
     print_location(&state, eid, state.entities[eid].location);
+    action_go(&mut state, eid, 3);
+    print_location(&state, eid, state.entities[eid].location);
 }
 
 fn print_location(state: &State, entity_id: usize, location_id: usize) {
