@@ -245,23 +245,19 @@ fn action_go(state: &mut State, entity_id: usize, link_id: usize) {
     let source_location_id = entity.location;
 
     // find the link based on the link_id
-    let location_link = state.locations[source_location_id]
+    let link = match state.locations[source_location_id]
         .links
         .iter()
-        .find(|&id| id.link == link_id);
+        .find(|&loc_lnk| loc_lnk.link == link_id)
+    {
+        Some(loc_lnk) => loc_lnk,
+        None => {
+            println!("cannot go there\n\n");
+            return;
+        }
+    };
 
-    if location_link.is_none() {
-        println!("cannot go there\n\n");
-        return;
-    }
-
-    let lnk = location_link.unwrap();
-
-    if lnk.location == entity.location {
-        return;
-    }
-
-    let destination_location_id = lnk.location;
+    let destination_location_id = link.location;
 
     state.locations[destination_location_id]
         .entities
@@ -269,7 +265,7 @@ fn action_go(state: &mut State, entity_id: usize, link_id: usize) {
 
     state.locations[source_location_id]
         .entities
-        .retain(|&id| id != entity_id);
+        .retain(|&x| x != entity_id);
 
     entity.location = destination_location_id;
 }
@@ -278,17 +274,17 @@ fn action_take(state: &mut State, entity_id: usize, object_name: &str) {
     let entity = &mut state.entities[entity_id];
     let location = &mut state.locations[entity.location];
 
-    let object_id = location
+    let object_id = match location
         .objects
         .iter()
-        .find(|&id| state.objects[*id].name == object_name);
-
-    if object_id.is_none() {
-        println!("{} not here\n\n", object_name);
-        return;
-    }
-
-    let object_id = *object_id.unwrap();
+        .find(|&&oid| state.objects[oid].name == object_name)
+    {
+        Some(&oid) => oid,
+        None => {
+            println!("{} not here\n\n", object_name);
+            return;
+        }
+    };
 
     location.objects.retain(|&x| x != object_id);
     entity.objects.push(object_id);
@@ -316,17 +312,17 @@ fn action_drop(state: &mut State, entity_id: usize, object_name: &str) {
     let entity = &mut state.entities[entity_id];
     let location = &mut state.locations[entity.location];
 
-    let object_id = entity
+    let object_id = match entity
         .objects
         .iter()
-        .find(|&id| state.objects[*id].name == object_name);
-
-    if object_id.is_none() {
-        println!("u don't have {}\n\n", object_name);
-        return;
-    }
-
-    let object_id = *object_id.unwrap();
+        .find(|&&oid| state.objects[oid].name == object_name)
+    {
+        Some(&oid) => oid,
+        None => {
+            println!("u don't have {}\n\n", object_name);
+            return;
+        }
+    };
 
     entity.objects.retain(|&x| x != object_id);
     location.objects.push(object_id);
@@ -335,29 +331,29 @@ fn action_drop(state: &mut State, entity_id: usize, object_name: &str) {
 fn action_give(state: &mut State, entity_id: usize, object_name: &str, to_entity: &str) {
     let location = &mut state.locations[state.entities[entity_id].location];
 
-    let target_id = location
+    let target_id = match location
         .entities
         .iter()
-        .find(|&id| state.entities[*id].name == to_entity);
+        .find(|&&eid| state.entities[eid].name == to_entity)
+    {
+        Some(&eid) => eid,
+        None => {
+            println!("{} not here\n\n", to_entity);
+            return;
+        }
+    };
 
-    if target_id.is_none() {
-        println!("{} not here\n\n", to_entity);
-        return;
-    }
-
-    let target_id = *target_id.unwrap();
-
-    let object_id = state.entities[entity_id]
+    let object_id = match state.entities[entity_id]
         .objects
         .iter()
-        .find(|&id| state.objects[*id].name == object_name);
-
-    if object_id.is_none() {
-        println!("{} not in inventory\n\n", object_name);
-        return;
-    }
-
-    let object_id = *object_id.unwrap();
+        .find(|&&oid| state.objects[oid].name == object_name)
+    {
+        Some(&oid) => oid,
+        None => {
+            println!("{} not in inventory\n\n", object_name);
+            return;
+        }
+    };
 
     state.entities[entity_id]
         .objects

@@ -1,0 +1,17 @@
+{
+    "tasks": [
+        {
+            "label": "rust_hello: run tests",
+            "type": "shell",
+            "command": "sh",
+            "args": [
+                "qa/test.sh"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": []
+        },
+    ]
+}
