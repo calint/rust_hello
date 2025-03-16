@@ -137,25 +137,20 @@ fn main() {
     // infinite loop
     loop {
         print_location(&state, eid, state.entities[eid].location);
-
-        // print  entity name and prompt
         print!("{} > ", state.entities[eid].name);
         std::io::stdout().flush().unwrap();
-
         let mut input = String::new();
         std::io::stdin().read_line(&mut input).unwrap();
+        let mut words = input.split_whitespace();
 
-        // extract first word from input and put the rest in args
-        let mut input = input.split_whitespace();
-
-        match input.next() {
+        match words.next() {
             Some("n") => action_go(&mut state, eid, 1),
             Some("e") => action_go(&mut state, eid, 2),
             Some("s") => action_go(&mut state, eid, 3),
             Some("w") => action_go(&mut state, eid, 4),
             Some("i") => action_inventory(&state, eid),
             Some("t") => {
-                let obj = input.next();
+                let obj = words.next();
                 if obj.is_none() {
                     print!("take what\n\n");
                     continue;
@@ -163,7 +158,7 @@ fn main() {
                 action_take(&mut state, eid, obj.unwrap());
             }
             Some("d") => {
-                let obj = input.next();
+                let obj = words.next();
                 if obj.is_none() {
                     print!("drop what\n\n");
                     continue;
@@ -171,12 +166,12 @@ fn main() {
                 action_drop(&mut state, eid, obj.unwrap());
             }
             Some("g") => {
-                let obj = input.next();
+                let obj = words.next();
                 if obj.is_none() {
                     print!("give what\n\n");
                     continue;
                 }
-                let to_entity = input.next();
+                let to_entity = words.next();
                 if to_entity.is_none() {
                     print!("give to whom\n\n");
                     continue;
