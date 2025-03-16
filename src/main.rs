@@ -163,30 +163,36 @@ fn main() {
             action_go(&mut state, eid, 3);
         } else if cmd == "w" {
             action_go(&mut state, eid, 4);
-        } else if cmd == "t" {
-            let obj = input.next().unwrap();
-            action_take(&mut state, eid, obj);
         } else if cmd == "i" {
             action_inventory(&mut state, eid);
+        } else if cmd == "t" {
+            let obj = input.next();
+            if obj.is_none() {
+                print!("take what\n\n");
+                continue;
+            }
+            action_take(&mut state, eid, obj.unwrap());
         } else if cmd == "d" {
-            let obj = input.next().unwrap();
-            action_drop(&mut state, eid, obj);
+            let obj = input.next();
+            if obj.is_none() {
+                print!("drop what\n\n");
+                continue;
+            }
+            action_drop(&mut state, eid, obj.unwrap());
         } else if cmd == "g" {
             let to_entity = input.next();
             if to_entity.is_none() {
                 print!("give to whom\n\n");
                 continue;
             }
-            let to_entity = to_entity.unwrap();
 
             let obj = input.next();
             if obj.is_none() {
                 print!("give what\n\n");
                 continue;
             }
-            let obj = obj.unwrap();
 
-            action_give(&mut state, eid, to_entity, obj);
+            action_give(&mut state, eid, to_entity.unwrap(), obj.unwrap());
         } else {
             print!("not understood\n\n");
         }
