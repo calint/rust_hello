@@ -132,7 +132,7 @@ fn main() {
         objects,
     };
 
-    let eid = 1;
+    let mut eid = 1;
 
     // infinite loop
     loop {
@@ -153,7 +153,9 @@ fn main() {
             break;
         }
 
-        if cmd == "n" {
+        if cmd == "help" {
+            print_help();
+        } else if cmd == "n" {
             action_go(&mut state, eid, 1);
         } else if cmd == "e" {
             action_go(&mut state, eid, 2);
@@ -187,6 +189,12 @@ fn main() {
             action_give(&mut state, eid, to_entity, obj);
         } else {
             print!("not understood\n\n");
+        }
+
+        if eid == 1 {
+            eid = 2;
+        } else {
+            eid = 1;
         }
     }
 }
@@ -364,4 +372,10 @@ fn action_give(state: &mut State, entity_id: usize, to_entity: &str, object_name
         .objects
         .retain(|&x| x != object_id);
     state.entities[target_id].objects.push(object_id);
+}
+
+fn print_help() {
+    println!(
+        "\ncommand:\n  n: go north\n  e: go east\n  s: go south\n  w: go west\n  i: display inventory\n  t <object>: take object\n  d <object>: drop object\n  g <object> <entity>: give object to entity\n  sdr <sector>: read sector from SD card\n  sdw <sector> <text>: write sector to SD card\n  help: this message\n"
+    );
 }
