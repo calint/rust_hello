@@ -134,7 +134,6 @@ fn main() {
 
     let mut eid = 1;
 
-    // infinite loop
     loop {
         print_location(&state, eid, state.entities[eid].location);
         print!("{} > ", state.entities[eid].name);
