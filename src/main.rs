@@ -147,9 +147,8 @@ fn main() {
 
         // extract first word from input and put the rest in args
         let mut input = input.split_whitespace();
-        let cmd = input.next();
 
-        match cmd {
+        match input.next() {
             Some("n") => action_go(&mut state, eid, 1),
             Some("e") => action_go(&mut state, eid, 2),
             Some("s") => action_go(&mut state, eid, 3),
