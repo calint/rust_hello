@@ -30,7 +30,7 @@ struct State {
 }
 
 fn main() {
-    let mut objects: Vec<Object> = vec![
+    let objects: Vec<Object> = vec![
         Object {
             name: String::from(""),
         },
@@ -45,7 +45,7 @@ fn main() {
         },
     ];
 
-    let mut entities: Vec<Entity> = vec![
+    let entities: Vec<Entity> = vec![
         Entity {
             name: String::from(""),
             location: 0,
@@ -71,7 +71,7 @@ fn main() {
         String::from("west"),
     ];
 
-    let mut locations: Vec<Location> = {
+    let locations: Vec<Location> = {
         vec![
             Location {
                 name: String::from(""),
