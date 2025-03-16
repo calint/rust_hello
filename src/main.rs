@@ -169,7 +169,7 @@ fn main() {
         } else if cmd == "w" {
             action_go(&mut state, eid, 4);
         } else if cmd == "i" {
-            action_inventory(&mut state, eid);
+            action_inventory(&state, eid);
         } else if cmd == "t" {
             let obj = input.next();
             if obj.is_none() {
@@ -314,7 +314,7 @@ fn action_take(state: &mut State, entity_id: usize, object_name: &str) {
     entity.objects.push(object_id);
 }
 
-fn action_inventory(state: &mut State, entity_id: usize) {
+fn action_inventory(state: &State, entity_id: usize) {
     let entity = &state.entities[entity_id];
 
     print!("u have: ");
