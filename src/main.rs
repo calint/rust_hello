@@ -1,3 +1,5 @@
+use std::io::Write;
+
 struct Object {
     name: String,
 }
@@ -132,11 +134,32 @@ fn main() {
 
     let eid = 1;
 
-    print_location(&state, eid, state.entities[eid].location);
-    action_go(&mut state, eid, 1);
-    print_location(&state, eid, state.entities[eid].location);
-    action_go(&mut state, eid, 3);
-    print_location(&state, eid, state.entities[eid].location);
+    // infinite loop
+    loop {
+        print_location(&state, eid, state.entities[eid].location);
+
+        // print  entity name and prompt
+        print!("{} > ", state.entities[eid].name);
+        std::io::stdout().flush().unwrap();
+
+        let mut input = String::new();
+        std::io::stdin().read_line(&mut input).unwrap();
+        let input = input.trim();
+
+        if input == "q" {
+            break;
+        }
+
+        if input == "n" {
+            action_go(&mut state, eid, 1);
+        } else if input == "e" {
+            action_go(&mut state, eid, 2);
+        } else if input == "s" {
+            action_go(&mut state, eid, 3);
+        } else if input == "w" {
+            action_go(&mut state, eid, 4);
+        }
+    }
 }
 
 fn print_location(state: &State, entity_id: usize, location_id: usize) {
