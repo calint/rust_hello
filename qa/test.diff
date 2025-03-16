@@ -1,0 +1,87 @@
+u r in roome
+u c: nothing
+exits: north, east, west
+me > u have: mirror
+u r in office
+u c: notebook, lighter
+exits: south
+u > u r in roome
+u c: nothing
+exits: north, east, west
+me > u r in office
+u c: lighter
+me is here
+exits: south
+u > u r in office
+u c: nothing
+u is here
+exits: south
+me > u r in office
+u c: nothing
+me is here
+exits: south
+u > u have: notebook, lighter, mirror
+u r in office
+u c: nothing
+u is here
+exits: south
+me > u have: nothing
+u r in office
+u c: nothing
+me is here
+exits: south
+u > u r in office
+u c: lighter
+u is here
+exits: south
+me > u r in office
+u c: nothing
+me is here
+exits: south
+u > u have: notebook, mirror
+u r in office
+u c: nothing
+u is here
+exits: south
+me > u have: lighter
+u r in office
+u c: nothing
+me is here
+exits: south
+u > u r in office
+u c: notebook
+u is here
+exits: south
+me > u have: lighter
+u r in office
+u c: notebook
+me is here
+exits: south
+u > u r in office
+u c: nothing
+u is here
+exits: south
+me > u have: lighter
+u r in office
+u c: nothing
+me is here
+exits: south
+u > u r in office
+u c: notebook
+u is here
+exits: south
+me > u have: lighter
+u r in office
+u c: notebook
+me is here
+exits: south
+u > u have: mirror
+u r in office
+u c: notebook
+u is here
+exits: south
+me > u r in office
+u c: nothing
+me is here
+exits: south
+u > 

@@ -147,7 +147,12 @@ fn main() {
 
         // extract first word from input and put the rest in args
         let mut input = input.split_whitespace();
-        let cmd = input.next().unwrap();
+        let cmd = input.next();
+        if cmd.is_none() {
+            print!("not understood\n\n");
+            continue;
+        }
+        let cmd = cmd.unwrap();
 
         if cmd == "q" {
             break;
@@ -180,19 +185,19 @@ fn main() {
             }
             action_drop(&mut state, eid, obj.unwrap());
         } else if cmd == "g" {
-            let to_entity = input.next();
-            if to_entity.is_none() {
-                print!("give to whom\n\n");
-                continue;
-            }
-
             let obj = input.next();
             if obj.is_none() {
                 print!("give what\n\n");
                 continue;
             }
 
-            action_give(&mut state, eid, to_entity.unwrap(), obj.unwrap());
+            let to_entity = input.next();
+            if to_entity.is_none() {
+                print!("give to whom\n\n");
+                continue;
+            }
+
+            action_give(&mut state, eid, obj.unwrap(), to_entity.unwrap());
         } else {
             print!("not understood\n\n");
         }
@@ -347,7 +352,7 @@ fn action_drop(state: &mut State, entity_id: usize, object_name: &str) {
     location.objects.push(object_id);
 }
 
-fn action_give(state: &mut State, entity_id: usize, to_entity: &str, object_name: &str) {
+fn action_give(state: &mut State, entity_id: usize, object_name: &str, to_entity: &str) {
     let location = &mut state.locations[state.entities[entity_id].location];
 
     let target_id = location
