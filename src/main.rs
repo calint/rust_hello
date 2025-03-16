@@ -148,58 +148,47 @@ fn main() {
         // extract first word from input and put the rest in args
         let mut input = input.split_whitespace();
         let cmd = input.next();
-        if cmd.is_none() {
-            print!("not understood\n\n");
-            continue;
-        }
-        let cmd = cmd.unwrap();
 
-        if cmd == "q" {
-            break;
-        }
+        match cmd {
+            Some("n") => action_go(&mut state, eid, 1),
+            Some("e") => action_go(&mut state, eid, 2),
+            Some("s") => action_go(&mut state, eid, 3),
+            Some("w") => action_go(&mut state, eid, 4),
+            Some("i") => action_inventory(&state, eid),
+            Some("t") => {
+                let obj = input.next();
+                if obj.is_none() {
+                    print!("take what\n\n");
+                    continue;
+                }
+                action_take(&mut state, eid, obj.unwrap());
+            }
+            Some("d") => {
+                let obj = input.next();
+                if obj.is_none() {
+                    print!("drop what\n\n");
+                    continue;
+                }
+                action_drop(&mut state, eid, obj.unwrap());
+            }
+            Some("g") => {
+                let obj = input.next();
+                if obj.is_none() {
+                    print!("give what\n\n");
+                    continue;
+                }
 
-        if cmd == "help" {
-            print_help();
-        } else if cmd == "n" {
-            action_go(&mut state, eid, 1);
-        } else if cmd == "e" {
-            action_go(&mut state, eid, 2);
-        } else if cmd == "s" {
-            action_go(&mut state, eid, 3);
-        } else if cmd == "w" {
-            action_go(&mut state, eid, 4);
-        } else if cmd == "i" {
-            action_inventory(&state, eid);
-        } else if cmd == "t" {
-            let obj = input.next();
-            if obj.is_none() {
-                print!("take what\n\n");
-                continue;
-            }
-            action_take(&mut state, eid, obj.unwrap());
-        } else if cmd == "d" {
-            let obj = input.next();
-            if obj.is_none() {
-                print!("drop what\n\n");
-                continue;
-            }
-            action_drop(&mut state, eid, obj.unwrap());
-        } else if cmd == "g" {
-            let obj = input.next();
-            if obj.is_none() {
-                print!("give what\n\n");
-                continue;
-            }
+                let to_entity = input.next();
+                if to_entity.is_none() {
+                    print!("give to whom\n\n");
+                    continue;
+                }
 
-            let to_entity = input.next();
-            if to_entity.is_none() {
-                print!("give to whom\n\n");
-                continue;
+                action_give(&mut state, eid, obj.unwrap(), to_entity.unwrap());
             }
-
-            action_give(&mut state, eid, obj.unwrap(), to_entity.unwrap());
-        } else {
-            print!("not understood\n\n");
+            Some("help") => print_help(),
+            Some("q") => break,
+            None | _ => print!("not understood\n\n"),
         }
 
         if eid == 1 {
