@@ -168,7 +168,23 @@ fn main() {
             action_inventory(&mut state, eid);
         } else if cmd == "d" {
             let obj = input.next().unwrap();
-            // action_drop(&mut state, eid, obj);
+            action_drop(&mut state, eid, obj);
+        } else if cmd == "g" {
+            let to_entity = input.next();
+            if to_entity.is_none() {
+                print!("give to whom\n\n");
+                continue;
+            }
+            let to_entity = to_entity.unwrap();
+
+            let obj = input.next();
+            if obj.is_none() {
+                print!("give what\n\n");
+                continue;
+            }
+            let obj = obj.unwrap();
+
+            action_give(&mut state, eid, to_entity, obj);
         } else {
             print!("not understood\n\n");
         }
@@ -233,7 +249,7 @@ fn action_go(state: &mut State, entity_id: usize, link_id: usize) {
     let location_link = state.locations[source_location_id]
         .links
         .iter()
-        .find(|&x| x.link == link_id);
+        .find(|&id| id.link == link_id);
 
     if location_link.is_none() {
         println!("cannot go there\n\n");
@@ -254,7 +270,7 @@ fn action_go(state: &mut State, entity_id: usize, link_id: usize) {
 
     state.locations[source_location_id]
         .entities
-        .retain(|&x| x != entity_id);
+        .retain(|&id| id != entity_id);
 
     entity.location = destination_location_id;
 }
@@ -266,7 +282,7 @@ fn action_take(state: &mut State, entity_id: usize, object_name: &str) {
     let object_id = location
         .objects
         .iter()
-        .find(|&x| state.objects[*x].name == object_name);
+        .find(|&id| state.objects[*id].name == object_name);
 
     if object_id.is_none() {
         println!("{} not here\n\n", object_name);
@@ -295,4 +311,57 @@ fn action_inventory(state: &mut State, entity_id: usize) {
         print!("nothing");
     }
     print!("\n");
+}
+
+fn action_drop(state: &mut State, entity_id: usize, object_name: &str) {
+    let entity = &mut state.entities[entity_id];
+    let location = &mut state.locations[entity.location];
+
+    let object_id = entity
+        .objects
+        .iter()
+        .find(|&id| state.objects[*id].name == object_name);
+
+    if object_id.is_none() {
+        println!("u don't have {}\n\n", object_name);
+        return;
+    }
+
+    let object_id = *object_id.unwrap();
+
+    entity.objects.retain(|&x| x != object_id);
+    location.objects.push(object_id);
+}
+
+fn action_give(state: &mut State, entity_id: usize, to_entity: &str, object_name: &str) {
+    let location = &mut state.locations[state.entities[entity_id].location];
+
+    let target_id = location
+        .entities
+        .iter()
+        .find(|&id| state.entities[*id].name == to_entity);
+
+    if target_id.is_none() {
+        println!("{} not here\n\n", to_entity);
+        return;
+    }
+
+    let target_id = *target_id.unwrap();
+
+    let object_id = state.entities[entity_id]
+        .objects
+        .iter()
+        .find(|&id| state.objects[*id].name == object_name);
+
+    if object_id.is_none() {
+        println!("{} not in inventory\n\n", object_name);
+        return;
+    }
+
+    let object_id = *object_id.unwrap();
+
+    state.entities[entity_id]
+        .objects
+        .retain(|&x| x != object_id);
+    state.entities[target_id].objects.push(object_id);
 }
