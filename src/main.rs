@@ -144,20 +144,33 @@ fn main() {
 
         let mut input = String::new();
         std::io::stdin().read_line(&mut input).unwrap();
-        let input = input.trim();
 
-        if input == "q" {
+        // extract first word from input and put the rest in args
+        let mut input = input.split_whitespace();
+        let cmd = input.next().unwrap();
+
+        if cmd == "q" {
             break;
         }
 
-        if input == "n" {
+        if cmd == "n" {
             action_go(&mut state, eid, 1);
-        } else if input == "e" {
+        } else if cmd == "e" {
             action_go(&mut state, eid, 2);
-        } else if input == "s" {
+        } else if cmd == "s" {
             action_go(&mut state, eid, 3);
-        } else if input == "w" {
+        } else if cmd == "w" {
             action_go(&mut state, eid, 4);
+        } else if cmd == "t" {
+            let obj = input.next().unwrap();
+            action_take(&mut state, eid, obj);
+        } else if cmd == "i" {
+            action_inventory(&mut state, eid);
+        } else if cmd == "d" {
+            let obj = input.next().unwrap();
+            // action_drop(&mut state, eid, obj);
+        } else {
+            print!("not understood\n\n");
         }
     }
 }
@@ -244,4 +257,42 @@ fn action_go(state: &mut State, entity_id: usize, link_id: usize) {
         .retain(|&x| x != entity_id);
 
     entity.location = destination_location_id;
+}
+
+fn action_take(state: &mut State, entity_id: usize, object_name: &str) {
+    let entity = &mut state.entities[entity_id];
+    let location = &mut state.locations[entity.location];
+
+    let object_id = location
+        .objects
+        .iter()
+        .find(|&x| state.objects[*x].name == object_name);
+
+    if object_id.is_none() {
+        println!("{} not here\n\n", object_name);
+        return;
+    }
+
+    let object_id = *object_id.unwrap();
+
+    location.objects.retain(|&x| x != object_id);
+    entity.objects.push(object_id);
+}
+
+fn action_inventory(state: &mut State, entity_id: usize) {
+    let entity = &state.entities[entity_id];
+
+    print!("u have: ");
+    let mut counter = 0;
+    for &oid in &entity.objects {
+        if counter != 0 {
+            print!(", ");
+        }
+        counter += 1;
+        print!("{}", state.objects[oid].name);
+    }
+    if counter == 0 {
+        print!("nothing");
+    }
+    print!("\n");
 }
