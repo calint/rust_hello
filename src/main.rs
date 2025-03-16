@@ -123,17 +123,21 @@ fn main() {
         ]
     };
 
-    let state = State {
+    let mut state = State {
         locations,
         links,
         entities,
         objects,
     };
 
-    print_location(&state, 1, 1);
+    let eid = 1;
+
+    print_location(&state, eid, state.entities[eid].location);
+    action_go(&mut state, eid, 1);
+    print_location(&state, eid, state.entities[eid].location);
 }
 
-fn print_location(state: &State, location_id: usize, entity_id: usize) {
+fn print_location(state: &State, entity_id: usize, location_id: usize) {
     print!("u r in {}\n", state.locations[location_id].name);
 
     // prit objects
@@ -181,4 +185,38 @@ fn print_location(state: &State, location_id: usize, entity_id: usize) {
         print!("none");
     }
     print!("\n");
+}
+
+fn action_go(state: &mut State, entity_id: usize, link_id: usize) {
+    let entity = &mut state.entities[entity_id];
+    let source_location_id = entity.location;
+
+    // find the link based on the link_id
+    let location_link = state.locations[source_location_id]
+        .links
+        .iter()
+        .find(|&x| x.link == link_id);
+
+    if location_link.is_none() {
+        println!("cannot go there\n\n");
+        return;
+    }
+
+    let lnk = location_link.unwrap();
+
+    if lnk.location == entity.location {
+        return;
+    }
+
+    let destination_location_id = lnk.location;
+
+    state.locations[destination_location_id]
+        .entities
+        .push(entity_id);
+
+    state.locations[source_location_id]
+        .entities
+        .retain(|&x| x != entity_id);
+
+    entity.location = destination_location_id;
 }
