@@ -176,13 +176,11 @@ fn main() {
                     print!("give what\n\n");
                     continue;
                 }
-
                 let to_entity = input.next();
                 if to_entity.is_none() {
                     print!("give to whom\n\n");
                     continue;
                 }
-
                 action_give(&mut state, eid, obj.unwrap(), to_entity.unwrap());
             }
             Some("help") => print_help(),
@@ -216,7 +214,7 @@ fn print_location(state: &State, entity_id: usize, location_id: usize) {
     }
     print!("\n");
 
-    // print entity excluding the current entity
+    // print entities excluding the current entity
     let mut counter = 0;
     for &eid in state.locations[location_id].entities.iter() {
         if eid == entity_id {
